@@ -1,8 +1,4 @@
-FROM python:3.9-slim
-
-# Set environment variables
-ENV PYTHONDONTWRITEBYTECODE=1  # Prevent Python from writing .pyc files
-ENV PYTHONUNBUFFERED=1        # Ensure output is sent directly to the terminal
+FROM python:3.9
 
 WORKDIR /app/backend
 
