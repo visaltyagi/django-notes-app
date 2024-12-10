@@ -1,0 +1,96 @@
+1. Create an Image uing the nginx in the nginx folder: docker build -t nginx .
+
+2. Pull the mysql image from the DockerhUb
+
+docker pull mysql:5.7
+
+3. Create a Django Image using this command: sudo docker build -t django_app . - It will be in the Django Folder.
+
+4. Create a network for the Docker Containers: docker network create notes-app-nw -d bridge
+
+
+5. Create a db_cont container using this command: 
+
+docker run -d --name db_cont --network notes-app-nw -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=test_db -p 3306:3306 mysql:5.7
+
+5. Create a django_app container using this command:
+
+docker run -d --name django_cont --network notes-app-nw --env-file .env --link db_cont:mysql -p 8000:8000 django_app
+
+6. Create a Nginx Container:
+
+docker run -d --name nginx_cont --network notes-app-nw --link django_cont:django -p 80:80 nginx:1.23.3-alpine
+
+7. Migrate the Python
+
+docker exec -it django_cont python manage.py migrate - Migration Successfully with Ok Message
+docker exec -it django_cont python manage.py createsuperuser
+
+8. Now, refresh the browser: You will notice that your app is visible.
+
+
+
+
+Pipeline Code Solution:
+
+
+pipeline{
+    
+    agent {label "Jenkins-Slave"}
+    
+    stages{
+        
+        stage("Code"){
+            
+            steps {
+                
+                echo "This is Cloning the Code."
+                git url: "https://github.com/visaltyagi/django-notes-app.git", branch: "main"
+                echo "Code Cloning Successful."
+                
+            }
+            
+        }
+        stage("Build"){
+            
+            steps{
+                
+                echo "This is Building the Code"
+                sh "whoami"
+                echo "Create a Network"
+                sh "docker network create notes-app-nw -d bridge"
+                sh "docker build -t nginx ./nginx"
+                sh "docker build -t django_app:latest ." 
+                sh "docker pull mysql:5.7"     
+            }
+        }
+        stage("Test"){
+            
+            steps{
+                
+                echo "This is testing the code"
+            }   
+        }
+        stage("Deploy"){
+            
+            steps{
+                echo "This is deploying the code."
+                sh "docker run -d --name db_cont --network notes-app-nw -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=test_db -p 3306:3306 mysql:5.7"
+                sh "sleep 10"
+                sh "docker run -d --name django_cont --network notes-app-nw --env-file .env --link db_cont:mysql -p 8000:8000 django_app:latest"
+                sh "docker run -d --name nginx_cont --network notes-app-nw --link django_cont:django -p 80:80 nginx:1.23.3-alpine"                
+            }
+        }
+       stage("Run"){
+            
+            steps{
+                echo "This is running the container."
+                sh "docker exec django_cont python manage.py migrate"
+            }
+        }
+    }
+}
+
+
+
+
