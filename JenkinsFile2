@@ -41,9 +41,9 @@ pipeline{
                 echo "This is pushing the images to the DockerHub"
                 withCredentials([usernamePassword('credentialsId':"dockerHubCred", passwordVariable:"dockerHubPass", usernameVariable:"dockerHubUser")]){
                 sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPass}"
-                sh "docker image tag django_app:latest ${env.dockerHubUser}/django_app:latest"
-                sh "docker image tag nginx:1.23.3-alpine ${env.dockerHubUser}/nginx:1.23.3-alpine"  
+                sh "docker image tag django_app:latest ${env.dockerHubUser}/django_app:latest" 
                 sh "docker push ${env.dockerHubUser}/django_app:latest"
+                sh "docker image tag nginx:1.23.3-alpine ${env.dockerHubUser}/nginx:1.23.3-alpine" 
                 sh "docker push ${env.dockerHubUser}/nginx:1.23.3-alpine"
                 }
             }
