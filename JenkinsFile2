@@ -10,8 +10,7 @@ pipeline{
                 
                 echo "This is Cloning the Code."
                 git url: "https://github.com/visaltyagi/django-notes-app.git", branch: "main"
-                echo "Code Cloning Successful."
-                
+                echo "Code Cloning Successful."         
             }
             
         }
