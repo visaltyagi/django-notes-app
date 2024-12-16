@@ -1,6 +1,5 @@
 @ Library ("Shared") _
-pipeline{
-    
+pipeline{    
     agent {label "Jenkins-Slave"}
     
     stages{
