@@ -1,4 +1,5 @@
 @ Library ("Shared") _
+
 pipeline{    
     agent {label "Jenkins-Slave"}
     
@@ -39,6 +40,7 @@ pipeline{
                 echo "This is testing the code"
             }   
         }
+        
         stage("Push to the DockerHub"){
              
             steps {
