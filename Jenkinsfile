@@ -3,8 +3,7 @@
 pipeline{    
     agent {label "Jenkins-Slave"}
     
-    stages{
-        
+    stages{ 
         stage("Hello"){
             steps{
                 script{
